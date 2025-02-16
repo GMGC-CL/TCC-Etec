@@ -156,3 +156,85 @@ Imagine que um usuário queira acessar sua rota `/recommendation/` e receber rec
 Essa arquitetura distribui bem as responsabilidades, facilitando a manutenção e a escalabilidade do sistema.
 
 </details>
+<details>
+  <summary>Planejamento</summary>
+
+---
+
+## **Fase 1: Planejamento e Configuração Inicial**
+### 🔹 **Definir Arquitetura e Tecnologias**
+- Banco de dados: **PostgreSQL + MongoDB**
+- Backend: **Flask (Python)**
+- Autenticação: **Firebase Authentication**
+- APIs externas: **TMDb para informações de filmes**
+- Machine Learning: **Modelo básico de recomendação**
+- Infraestrutura: **Railway/Render para banco e API**
+
+### 🔹 **Criar Estrutura do Repositório e Configuração Básica**
+**Responsáveis**: Time de Backend  
+- Criar estrutura de diretórios (`firebase/`, `middlewares/`, `mongo/`, `validators/`, etc.).
+- Definir o **`requirements.txt`** com dependências.
+- Criar o arquivo **`.env`** para armazenar chaves de API e credenciais.
+
+---
+
+## **Fase 2: Banco de Dados, Autenticação e Frontend**
+### 🔹 **Banco de Dados**
+**Responsáveis**: Time de Backend  
+✅ Criar **MongoDB** para armazenar preferências e interações.  
+✅ Criar **PostgreSQL** para usuários, avaliações e histórico.  
+✅ Implementar conexões com MongoDB e PostgreSQL.
+
+### 🔹 **Autenticação Firebase**
+**Responsáveis**: Time de Backend  
+✅ Criar **`firebase/firebase_config.py`** para inicializar Firebase.  
+✅ Criar **`firebase/auth.py`** para autenticar usuários via JWT.  
+✅ Criar **middleware `middlewares/auth_middleware.py`** para validar usuários nas rotas protegidas.  
+
+### 🔹 **Criação de Interface Web**
+**Responsáveis**: Time de Frontend  
+✅ Criar interface simples com **React**.  
+✅ Implementar autenticação via Firebase.  
+✅ Criar página de recomendações dinâmicas.
+
+---
+
+## **Fase 3: Funcionalidades Principais**
+### 🔹 **Módulo de Filmes (TMDb API)**
+**Responsáveis**: Time de Backend  
+✅ Criar **`controllers/movie_controller.py`** para buscar filmes via TMDb.  
+✅ Criar **`mongo/repository.py`** para salvar filmes recomendados no MongoDB.  
+✅ Implementar **filtros básicos** (por gênero, ano, nota mínima).  
+
+### 🔹 **Sistema de Avaliação**
+**Responsáveis**: Time de Backend  
+✅ Criar endpoints para que usuários avaliem filmes (`/avaliar`).  
+✅ Armazenar avaliações no PostgreSQL.  
+✅ Criar função para calcular **média das notas** e atualizar no MongoDB.  
+
+---
+
+## **Fase 4: Sistema de Recomendação Inicial**
+### 🔹 **Primeira versão da recomendação**
+**Responsáveis**: Time de Machine Learning  
+✅ Implementar **filtragem colaborativa simples** (KNN ou SVD).  
+✅ Criar **API `/recommendations`** baseada no histórico de filmes assistidos.  
+
+### 🔹 **Integração da IA (opcional)**
+**Responsáveis**: Time de Machine Learning  
+✅ Implementar **FAISS para buscas vetoriais** (se necessário).  
+✅ Criar embeddings dos filmes via OpenAI API ou modelo próprio.  
+✅ Usar LangChain para chat interativo com IA.  
+
+---
+
+## **Fase 5: Testes**
+
+### 🔹 **Testes e Refinamento**
+**Responsáveis**: Todo o time  
+✅ Testar endpoints e integração entre backend e frontend.  
+✅ Ajustar modelo de recomendação conforme feedbacks.  
+
+---
+
+</details>
