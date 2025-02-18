@@ -88,29 +88,32 @@ Os middlewares são funções que são executadas antes ou depois das suas rotas
 - **Objetivo:**  
   Manter um registro detalhado de todas as requisições e respostas para monitorar e depurar o sistema.
 
-### 3. **mongo**
-Aqui, iremos configurar o MongoDB para armazenar e consultar dados de filmes ou outras informações relevantes do usuário.
+### **3. database**
+Aqui, iremos utilizar o SQLite para armazenar e consultar dados de filmes ou outras informações relevantes do usuário.
 
-#### a) `mongo/database.py`
-- **O que desenvolver:**  
-  Configuração básica para se conectar ao MongoDB e retornar uma coleção específica.
-  
-- **Objetivo:**  
-  Configurar e estabelecer uma conexão com o banco de dados MongoDB, que será usado para armazenar e consultar informações como filmes, preferências dos usuários, etc.
+#### a) `database/database.py`
+- **Objetivo**: Configurar e estabelecer uma conexão com SQLite.
+- **Função**: Criar e gerenciar o banco `filmes.db`, garantindo que as tabelas sejam criadas corretamente.
 
-#### b) `mongo/models.py`
-- **O que desenvolver:**  
-  Um modelo que define como as informações de um filme ou outros dados devem ser armazenados no MongoDB.
-  
-- **Objetivo:**  
-  Estruturar os dados de maneira consistente ao inseri-los ou recuperá-los do MongoDB.
+#### b) `database/schema.sql`
+- **Objetivo**: Definir a estrutura das tabelas do SQLite.
+- **Função**: Contém os comandos SQL para criação das tabelas.
 
-#### c) `mongo/repository.py`
-- **O que desenvolver:**  
-  Funções de repositório que interagem diretamente com o banco de dados, como inserir filmes ou consultar a lista de filmes.
-  
-- **Objetivo:**  
-  Facilitar a interação com o MongoDB, separando a lógica de banco de dados do restante do código.
+#### c) `database/repository.py`
+- **Objetivo**: Facilitar a interação com o banco SQLite.
+- **Função**: Permitir adição, consulta e remoção de dados no SQLite.
+
+**Principais Tabelas do SQLite:**
+- `usuarios`: Armazena informações de usuários.
+- `filmes`: Contém os filmes cadastrados no sistema.
+- `avaliacoes`: Armazena avaliações dos filmes.
+- `favoritos`: Guarda os filmes favoritos de cada usuário.
+- `historico_visualizacao`: Registra os filmes assistidos.
+- `preferencias_usuario`: Armazena preferências de gênero e diretores favoritos.
+- `interacoes`: Registra interações do usuário com o sistema.
+- `filmes_api`: Armazena informações sobre filmes vindos da API TMDb.
+- `configuracoes_api`: Armazena informações necessárias para acessar a API TMDb, como chaves de API, endpoints ou cache de respostas.
+
 
 ### 4. **validators**
 Os validadores são importantes para garantir que os dados enviados para as rotas da API estão no formato correto. Aqui, você vai validar os dados de entrada, como informações de filmes e usuários.
@@ -135,23 +138,12 @@ Os validadores são importantes para garantir que os dados enviados para as rota
 
 Imagine que um usuário queira acessar sua rota `/recommendation/` e receber recomendações de filmes baseadas em suas preferências. Aqui está como as diferentes partes que você vai desenvolver funcionarão juntas:
 
-1. **Autenticação (Firebase):**  
-   O usuário fará login via Firebase, que cria um token de autenticação. Este token será passado em cada requisição subsequente para verificar se ele está autorizado a usar a API.
-
-2. **Middleware (auth_middleware.py):**  
-   O middleware intercepta cada requisição e verifica se o token do Firebase é válido. Se não for, o acesso à rota é negado.
-
-3. **Validação de Dados (validators/movie_validators.py):**  
-   Quando o usuário envia suas preferências (como gênero e ano do filme), o validador garante que os dados estão corretos antes de processá-los.
-
-4. **MongoDB (mongo/repository.py):**  
-   Se necessário, o MongoDB será utilizado para armazenar informações, como o histórico de preferências do usuário ou filmes já recomendados. 
-
-5. **Requisição para a API TMDB (controller):**  
-   Com os dados validados, a aplicação faz uma requisição à API do TMDB usando o `movieController`. O resultado é então retornado ao usuário, ou armazenado no MongoDB para futuras consultas.
-
-6. **Logs e Monitoramento (logging_middleware.py):**  
-   Cada requisição e resposta será registrada para que o desenvolvedor possa monitorar o comportamento do sistema e identificar possíveis problemas.
+1️⃣ O usuário faz login via Firebase, que gera um token JWT.
+2️⃣ O middleware `auth_middleware.py` verifica a autenticidade do token.
+3️⃣ Os validadores garantem que os dados enviados estão corretos.
+4️⃣ O SQLite armazena e recupera informações de filmes e usuários.
+5️⃣ A API do TMDb é consultada para buscar recomendações de filmes.
+6️⃣ O middleware de logging registra tudo para monitoramento.
 
 Essa arquitetura distribui bem as responsabilidades, facilitando a manutenção e a escalabilidade do sistema.
 
@@ -163,7 +155,7 @@ Essa arquitetura distribui bem as responsabilidades, facilitando a manutenção 
 
 ## **Fase 1: Planejamento e Configuração Inicial**
 ### 🔹 **Definir Arquitetura e Tecnologias**
-- Banco de dados: **PostgreSQL + MongoDB**
+- Banco de dados: **SQLite**
 - Backend: **Flask (Python)**
 - Autenticação: **Firebase Authentication**
 - APIs externas: **TMDb para informações de filmes**
@@ -181,9 +173,8 @@ Essa arquitetura distribui bem as responsabilidades, facilitando a manutenção 
 ## **Fase 2: Banco de Dados, Autenticação e Frontend**
 ### 🔹 **Banco de Dados**
 **Responsáveis**: Time de Backend  
-✅ Criar **MongoDB** para armazenar preferências e interações.  
-✅ Criar **PostgreSQL** para usuários, avaliações e histórico.  
-✅ Implementar conexões com MongoDB e PostgreSQL.
+✅ Criar **SQLite** para armazenar preferências e interações.  
+✅ Implementar conexões com SQLite.
 
 ### 🔹 **Autenticação Firebase**
 **Responsáveis**: Time de Backend  
