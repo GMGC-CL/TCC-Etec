@@ -1,0 +1,64 @@
+{
+  "tmdb": {
+    "api_key": "SUA_CHAVE_AQUI",
+    "base_url": "https://api.themoviedb.org/3",
+    "language": "pt-BR",
+    "region": "BR",
+    "image_base_url": "https://image.tmdb.org/t/p/",
+    "endpoints": {
+      "movie": {
+        "popular": "/movie/popular",
+        "top_rated": "/movie/top_rated",
+        "now_playing": "/movie/now_playing",
+        "upcoming": "/movie/upcoming",
+        "details": "/movie/{id}",
+        "recommendations": "/movie/{id}/recommendations",
+        "similar": "/movie/{id}/similar",
+        "credits": "/movie/{id}/credits",
+        "reviews": "/movie/{id}/reviews",
+        "videos": "/movie/{id}/videos",
+        "images": "/movie/{id}/images"
+      },
+      "tv": {
+        "popular": "/tv/popular",
+        "top_rated": "/tv/top_rated",
+        "airing_today": "/tv/airing_today",
+        "on_the_air": "/tv/on_the_air",
+        "details": "/tv/{id}",
+        "recommendations": "/tv/{id}/recommendations",
+        "similar": "/tv/{id}/similar",
+        "credits": "/tv/{id}/credits",
+        "reviews": "/tv/{id}/reviews",
+        "videos": "/tv/{id}/videos",
+        "images": "/tv/{id}/images"
+      },
+      "person": {
+        "details": "/person/{id}",
+        "movie_credits": "/person/{id}/movie_credits",
+        "tv_credits": "/person/{id}/tv_credits",
+        "images": "/person/{id}/images"
+      },
+      "search": {
+        "movie": "/search/movie",
+        "tv": "/search/tv",
+        "person": "/search/person",
+        "multi": "/search/multi"
+      },
+      "trending": {
+        "all": "/trending/all/week",
+        "movie": "/trending/movie/week",
+        "tv": "/trending/tv/week",
+        "person": "/trending/person/week"
+      },
+      "discover": {
+        "movies": "/discover/movie",
+        "tv": "/discover/tv"
+      },
+      "genres": {
+        "movie": "/genre/movie/list",
+        "tv": "/genre/tv/list"
+      },
+      "configurations": "/configuration"
+    }
+  }
+}
