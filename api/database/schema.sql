@@ -1,7 +1,7 @@
--- Ativando suporte a chaves estrangeiras no SQLite
+-- Ativar suporte a chaves estrangeiras
 PRAGMA foreign_keys = ON;
 
--- Tabela de usuários
+-- Tabela de usuários: armazena informações dos usuários cadastrados
 CREATE TABLE IF NOT EXISTS usuarios (
     id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
@@ -10,45 +10,39 @@ CREATE TABLE IF NOT EXISTS usuarios (
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de gêneros
+-- Tabela de gêneros: contém os diferentes gêneros de filmes
 CREATE TABLE IF NOT EXISTS generos (
     id_genero INTEGER PRIMARY KEY,
     nome TEXT UNIQUE NOT NULL
 );
 
--- Populando a tabela de gêneros
-INSERT INTO generos (id_genero, nome) VALUES
-(28, 'Ação'),
-(35, 'Comédia'),
-(18, 'Drama'),
-(10749, 'Romance'),
-(16, 'Animação'),
-(99, 'Documentário'),
-(36, 'Biografia'),
-(878, 'Ficção Científica'),
-(27, 'Terror'),
-(12, 'Aventura'),
-(14, 'Fantasia'),
-(9648, 'Mistério'),
-(10752, 'Guerra'),
-(10751, 'Família'),
-(10402, 'Musical');
-
--- Tabela de filmes
+-- Tabela de filmes: armazena dados principais sobre filmes
 CREATE TABLE IF NOT EXISTS filmes (
     id_filme INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_tmdb INTEGER UNIQUE NOT NULL, -- ID do filme no TMDb
+    id_tmdb INTEGER UNIQUE NOT NULL,
     titulo TEXT NOT NULL,
     ano_lancamento INTEGER,
     sinopse TEXT,
     poster_url TEXT,
     imdb_id TEXT UNIQUE,
-    facebook_id TEXT UNIQUE,
-    instagram_id TEXT UNIQUE,
-    twitter_id TEXT UNIQUE
+    orcamento INTEGER,
+    receita INTEGER,
+    duracao INTEGER,
+    id_status INTEGER,
+    FOREIGN KEY (id_status) REFERENCES status_filme(id_status) ON DELETE SET NULL
 );
 
--- Tabela de relacionamento entre filmes e gêneros
+-- Tabela de status de filmes: armazena o estado do filme (lançado, em produção, etc.)
+CREATE TABLE IF NOT EXISTS status_filme (
+    id_status INTEGER PRIMARY KEY AUTOINCREMENT,
+    descricao TEXT UNIQUE NOT NULL
+);
+
+-- Inserindo os status de filmes padrão
+INSERT INTO status_filme (descricao) VALUES
+('Rumor'), ('Planejado'), ('Em produção'), ('Pós-produção'), ('Lançado'), ('Cancelado');
+
+-- Relacionamento entre filmes e gêneros
 CREATE TABLE IF NOT EXISTS filme_genero (
     id_filme INTEGER,
     id_genero INTEGER,
@@ -57,7 +51,7 @@ CREATE TABLE IF NOT EXISTS filme_genero (
     PRIMARY KEY (id_filme, id_genero)
 );
 
--- Tabela de produtoras
+-- Tabela de produtoras: armazena os estúdios/produtoras de filmes
 CREATE TABLE IF NOT EXISTS produtoras (
     id_produtora INTEGER PRIMARY KEY,
     nome TEXT UNIQUE NOT NULL
@@ -72,13 +66,13 @@ CREATE TABLE IF NOT EXISTS filme_produtora (
     PRIMARY KEY (id_filme, id_produtora)
 );
 
--- Tabela de países de produção
+-- Tabela de países de produção de filmes
 CREATE TABLE IF NOT EXISTS paises (
     id_pais TEXT PRIMARY KEY,
     nome TEXT UNIQUE NOT NULL
 );
 
--- Relacionamento entre filmes e países
+-- Relacionamento entre filmes e países de produção
 CREATE TABLE IF NOT EXISTS filme_pais (
     id_filme INTEGER,
     id_pais TEXT,
@@ -87,7 +81,7 @@ CREATE TABLE IF NOT EXISTS filme_pais (
     PRIMARY KEY (id_filme, id_pais)
 );
 
--- Tabela de idiomas
+-- Tabela de idiomas dos filmes
 CREATE TABLE IF NOT EXISTS idiomas (
     id_idioma TEXT PRIMARY KEY,
     nome TEXT UNIQUE NOT NULL
@@ -102,7 +96,50 @@ CREATE TABLE IF NOT EXISTS filme_idioma (
     PRIMARY KEY (id_filme, id_idioma)
 );
 
--- Tabela de avaliações dos filmes
+-- Tabela de pessoas: atores, diretores e roteiristas
+CREATE TABLE IF NOT EXISTS pessoas (
+    id_pessoa INTEGER PRIMARY KEY,
+    nome TEXT UNIQUE NOT NULL,
+    perfil_url TEXT
+);
+
+-- Relacionamento entre filmes e pessoas (atores, diretores, roteiristas)
+CREATE TABLE IF NOT EXISTS filme_pessoa (
+    id_filme INTEGER,
+    id_pessoa INTEGER,
+    papel TEXT CHECK (papel IN ('ator', 'diretor', 'roteirista')),
+    personagem TEXT,
+    FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE,
+    FOREIGN KEY (id_pessoa) REFERENCES pessoas(id_pessoa) ON DELETE CASCADE,
+    PRIMARY KEY (id_filme, id_pessoa, papel)
+);
+
+-- Tabela de vídeos: armazena trailers e vídeos promocionais dos filmes
+CREATE TABLE IF NOT EXISTS videos (
+    id_video TEXT PRIMARY KEY,
+    id_filme INTEGER,
+    tipo TEXT CHECK (tipo IN ('Trailer', 'Teaser', 'Entrevista', 'Bastidores')),
+    site TEXT CHECK (site IN ('YouTube', 'Vimeo')),
+    url TEXT NOT NULL,
+    FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE
+);
+
+-- Tabela de palavras-chave dos filmes
+CREATE TABLE IF NOT EXISTS palavras_chave (
+    id_palavra INTEGER PRIMARY KEY,
+    nome TEXT UNIQUE NOT NULL
+);
+
+-- Relacionamento entre filmes e palavras-chave
+CREATE TABLE IF NOT EXISTS filme_palavra (
+    id_filme INTEGER,
+    id_palavra INTEGER,
+    FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE,
+    FOREIGN KEY (id_palavra) REFERENCES palavras_chave(id_palavra) ON DELETE CASCADE,
+    PRIMARY KEY (id_filme, id_palavra)
+);
+
+-- Tabela de avaliações de filmes
 CREATE TABLE IF NOT EXISTS avaliacoes (
     id_avaliacao INTEGER PRIMARY KEY AUTOINCREMENT,
     id_usuario INTEGER,
@@ -114,79 +151,33 @@ CREATE TABLE IF NOT EXISTS avaliacoes (
     FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE
 );
 
--- Tabela de histórico de visualização
-CREATE TABLE IF NOT EXISTS historico_visualizacao (
-    id_historico INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_usuario INTEGER,
-    id_filme INTEGER,
-    data_visualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE
-);
-
 -- Tabela de favoritos
 CREATE TABLE IF NOT EXISTS favoritos (
-    id_favorito INTEGER PRIMARY KEY AUTOINCREMENT,
     id_usuario INTEGER,
     id_filme INTEGER,
     data_favorito TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE,
-    UNIQUE (id_usuario, id_filme) -- Evita duplicação
+    PRIMARY KEY (id_usuario, id_filme)
 );
 
--- Tabela de preferências do usuário
-CREATE TABLE IF NOT EXISTS preferencias_usuario (
-    id_preferencia INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_usuario INTEGER,
-    generos_preferidos TEXT,
-    ano_preferido INTEGER,
-    nota_minima INTEGER CHECK (nota_minima BETWEEN 1 AND 5),
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
-);
-
--- Tabela de interações do usuário com o sistema
-CREATE TABLE IF NOT EXISTS interacoes (
-    id_interacao INTEGER PRIMARY KEY AUTOINCREMENT,
+-- Tabela de histórico de visualização
+CREATE TABLE IF NOT EXISTS historico_visualizacao (
     id_usuario INTEGER,
     id_filme INTEGER,
-    tipo_interacao TEXT CHECK (tipo_interacao IN ('clicou', 'assistiu', 'ignorou')),
-    data_interacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_visualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE
+    FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE,
+    PRIMARY KEY (id_usuario, id_filme)
 );
 
--- Tabela de histórico de busca
-CREATE TABLE IF NOT EXISTS historico_busca (
-    id_busca INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_usuario INTEGER,
-    termo_busca TEXT NOT NULL,
-    data_busca TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
-);
-
--- Tabela de recomendações para usuários
+-- Tabela de recomendações
 CREATE TABLE IF NOT EXISTS recomendacoes (
-    id_recomendacao INTEGER PRIMARY KEY AUTOINCREMENT,
     id_usuario INTEGER,
     id_filme INTEGER,
-    razao TEXT, -- Exemplo: "baseado no seu histórico", "baseado em seus favoritos"
+    razao TEXT,
     data_recomendacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE
-);
-
--- Tabela de configurações da API TMDb
-CREATE TABLE IF NOT EXISTS configuracoes_api (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    chave_api TEXT NOT NULL,
-    base_url TEXT NOT NULL DEFAULT 'https://api.themoviedb.org/3',
-    endpoint_populares TEXT DEFAULT '/movie/popular',
-    endpoint_busca TEXT DEFAULT '/search/movie',
-    endpoint_detalhes TEXT DEFAULT '/movie/',
-    endpoint_series_populares TEXT DEFAULT '/tv/popular',
-    endpoint_busca_series TEXT DEFAULT '/search/tv',
-    endpoint_detalhes_series TEXT DEFAULT '/tv/',
-    cache_respostas TEXT,
-    ultimo_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    FOREIGN KEY (id_filme) REFERENCES filmes(id_filme) ON DELETE CASCADE,
+    PRIMARY KEY (id_usuario, id_filme)
 );
