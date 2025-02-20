@@ -229,3 +229,37 @@ Essa arquitetura distribui bem as responsabilidades, facilitando a manutenção 
 ---
 
 </details>
+
+
+## **📌 Tabela de Relacionamento entre Banco de Dados e API TMDb**
+
+| **Nome da Tabela**          | **Relacionamento**                                        | **Endpoint TMDb** |
+|----------------------------|---------------------------------------------------------|-------------------|
+| **usuarios**                | Usuários cadastrados na plataforma                     | *Não vem da TMDb* |
+| **filmes**                  | Filmes disponíveis para recomendação                   | `/movie/{id}` |
+| **generos**                 | Lista de gêneros de filmes                             | `/genre/movie/list` |
+| **filme_genero**            | Relaciona filmes aos seus gêneros                     | `/movie/{id}` |
+| **produtoras**              | Lista de estúdios/produtoras                          | `/movie/{id}` (campo `production_companies`) |
+| **filme_produtora**         | Relaciona filmes às produtoras                        | `/movie/{id}` (campo `production_companies`) |
+| **paises**                  | Lista de países                                       | `/movie/{id}` (campo `production_countries`) |
+| **filme_pais**              | Relaciona filmes aos países de produção               | `/movie/{id}` (campo `production_countries`) |
+| **idiomas**                 | Lista de idiomas falados nos filmes                   | `/movie/{id}` (campo `spoken_languages`) |
+| **filme_idioma**            | Relaciona filmes aos idiomas falados                  | `/movie/{id}` (campo `spoken_languages`) |
+| **pessoas**                 | Lista de pessoas (atores, diretores, roteiristas)     | `/movie/{id}/credits` e `/person/{id}` |
+| **filme_pessoa**            | Relaciona filmes a atores, diretores, roteiristas     | `/movie/{id}/credits` |
+| **videos**                  | Trailers e vídeos promocionais                        | `/movie/{id}/videos` |
+| **avaliacoes**              | Armazena avaliações dos usuários                      | *Não vem da TMDb* |
+| **curtidas_avaliacoes**     | Relaciona usuários que curtiram avaliações            | *Não vem da TMDb* |
+| **favoritos**               | Lista de filmes favoritos dos usuários                | *Não vem da TMDb* |
+| **assistir_depois**         | Lista de filmes que o usuário quer assistir depois    | *Não vem da TMDb* |
+| **historico_visualizacao**  | Filmes que o usuário assistiu                         | *Não vem da TMDb* |
+| **historico_busca**         | Armazena os termos de busca do usuário                | *Não vem da TMDb* |
+| **recomendacoes**           | Filmes recomendados para os usuários                  | `/movie/{id}/recommendations` |
+| **interacoes**              | Registra interações dos usuários (cliques, ignorar)   | *Não vem da TMDb* |
+| **universos**               | Universos cinematográficos (MCU, Star Wars)           | `/movie/{id}` (campo `belongs_to_collection`) |
+| **filme_universo**          | Relaciona filmes a universos                          | `/movie/{id}` (campo `belongs_to_collection`) |
+| **palavras_chave**          | Lista de palavras-chave dos filmes                    | `/movie/{id}/keywords` |
+| **filme_palavra**           | Relaciona filmes às palavras-chave                    | `/movie/{id}/keywords` |
+| **status_filme**            | Status do filme (Lançado, Em produção, Cancelado)     | `/movie/{id}` (campo `status`) |
+
+
