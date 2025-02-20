@@ -230,8 +230,69 @@ Essa arquitetura distribui bem as responsabilidades, facilitando a manutenção 
 
 </details>
 
+## **📌 Endpoint**
 
-## **📌 Tabela de Relacionamento entre Banco de Dados e API TMDb**
+| **Categoria**         | **Endpoint**                                                                 | **Descrição**                                                                                               |
+|-----------------------|------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| **Filmes**            | `/movie/{movie_id}`                                                          | Obtém detalhes de um filme específico pelo seu ID.                                                          |
+|                       | `/movie/{movie_id}/credits`                                                  | Recupera o elenco e a equipe técnica de um filme.                                                           |
+|                       | `/movie/{movie_id}/images`                                                   | Obtém as imagens associadas a um filme.                                                                     |
+|                       | `/movie/{movie_id}/videos`                                                   | Recupera os vídeos associados a um filme, como trailers.                                                    |
+|                       | `/movie/{movie_id}/recommendations`                                          | Obtém recomendações de filmes baseadas em um filme específico.                                              |
+|                       | `/movie/{movie_id}/reviews`                                                  | Recupera as avaliações de um filme.                                                                         |
+|                       | `/movie/popular`                                                             | Lista os filmes populares no momento.                                                                       |
+|                       | `/movie/top_rated`                                                           | Lista os filmes mais bem avaliados.                                                                         |
+|                       | `/movie/now_playing`                                                         | Lista os filmes que estão em exibição nos cinemas.                                                          |
+|                       | `/movie/upcoming`                                                            | Lista os filmes que serão lançados em breve.                                                                |
+| **Séries de TV**      | `/tv/{tv_id}`                                                                | Obtém detalhes de uma série específica pelo seu ID.                                                         |
+|                       | `/tv/{tv_id}/credits`                                                        | Recupera o elenco e a equipe técnica de uma série.                                                          |
+|                       | `/tv/{tv_id}/images`                                                         | Obtém as imagens associadas a uma série.                                                                    |
+|                       | `/tv/{tv_id}/videos`                                                         | Recupera os vídeos associados a uma série, como trailers.                                                   |
+|                       | `/tv/{tv_id}/recommendations`                                                | Obtém recomendações de séries baseadas em uma série específica.                                             |
+|                       | `/tv/{tv_id}/reviews`                                                        | Recupera as avaliações de uma série.                                                                        |
+|                       | `/tv/popular`                                                                | Lista as séries populares no momento.                                                                       |
+|                       | `/tv/top_rated`                                                              | Lista as séries mais bem avaliadas.                                                                         |
+|                       | `/tv/on_the_air`                                                             | Lista as séries que estão sendo transmitidas atualmente.                                                    |
+|                       | `/tv/airing_today`                                                           | Lista as séries que estão sendo transmitidas hoje.                                                          |
+| **Pessoas**           | `/person/{person_id}`                                                        | Obtém detalhes de uma pessoa (ator, diretor, etc.) específica pelo seu ID.                                  |
+|                       | `/person/{person_id}/movie_credits`                                          | Recupera os créditos em filmes de uma pessoa.                                                               |
+|                       | `/person/{person_id}/tv_credits`                                             | Recupera os créditos em séries de TV de uma pessoa.                                                         |
+|                       | `/person/{person_id}/images`                                                 | Obtém as imagens associadas a uma pessoa.                                                                   |
+|                       | `/person/popular`                                                            | Lista as pessoas populares no momento.                                                                      |
+| **Pesquisa**          | `/search/movie`                                                              | Pesquisa por filmes com base em uma consulta.                                                               |
+|                       | `/search/tv`                                                                 | Pesquisa por séries de TV com base em uma consulta.                                                         |
+|                       | `/search/person`                                                             | Pesquisa por pessoas com base em uma consulta.                                                              |
+|                       | `/search/collection`                                                         | Pesquisa por coleções de filmes com base em uma consulta.                                                   |
+|                       | `/search/company`                                                            | Pesquisa por empresas de produção com base em uma consulta.                                                 |
+|                       | `/search/keyword`                                                            | Pesquisa por palavras-chave com base em uma consulta.                                                       |
+|                       | `/search/multi`                                                              | Pesquisa por filmes, séries de TV e pessoas com base em uma consulta.                                       |
+| **Coleções**          | `/collection/{collection_id}`                                                | Obtém detalhes de uma coleção específica pelo seu ID.                                                       |
+|                       | `/collection/{collection_id}/images`                                         | Obtém as imagens associadas a uma coleção.                                                                  |
+| **Gêneros**           | `/genre/movie/list`                                                          | Recupera a lista de gêneros de filmes.                                                                      |
+|                       | `/genre/tv/list`                                                             | Recupera a lista de gêneros de séries de TV.                                                                |
+| **Palavras-chave**    | `/keyword/{keyword_id}`                                                      | Obtém detalhes de uma palavra-chave específica pelo seu ID.                                                 |
+|                       | `/keyword/{keyword_id}/movies`                                               | Recupera filmes associados a uma palavra-chave.                                                             |
+| **Empresas**          | `/company/{company_id}`                                                      | Obtém detalhes de uma empresa específica pelo seu ID.                                                       |
+|                       | `/company/{company_id}/movies`                                               | Recupera filmes associados a uma empresa.                                                                   |
+| **Conteúdo em Tendência** | `/trending/{media_type}/{time_window}`                                   | Recupera a lista de conteúdo em tendência.                                                                  |
+| **Provedores de Streaming** | `/watch/providers/regions`                                             | Lista as regiões disponíveis para provedores de streaming.                                                  |
+|                       | `/watch/providers/movie`                                                     | Lista os provedores de streaming disponíveis para filmes.                                                   |
+|                       | `/watch/providers/tv`                                                        | Lista os provedores de streaming disponíveis para séries de TV.                                             |
+| **Outros**            | `/configuration`                                                            | Obtém as informações de configuração da API, como tamanhos de imagens e URLs base.                          |
+|                       | `/network/{network_id}`                                                      | Obtém detalhes de uma rede de TV específica pelo seu ID.                                                    |
+|                       | `/network/{network_id}/images`                                               | Obtém as imagens associadas a uma rede de TV.                                                               |
+|                       | `/review/{review_id}`                                                        | Obtém detalhes de uma avaliação específica pelo seu ID.                                                     |
+|                       | `/discover/movie`                                                            | Descobre filmes com base em diferentes critérios de filtro.                                                 |
+|                       | `/discover/tv`                                                               | Descobre séries de TV com base em diferentes critérios de filtro.                                           |
+|                       | `/find/{external_id}`                                                        | Encontra um filme, série de TV ou pessoa pelo ID externo.                                                   |
+|                       | `/certification/movie/list`                                                  | Obtém a lista de certificações de filmes disponíveis.                                                       |
+|                       | `/certification/tv/list`                                                     | Obtém a lista de certificações de séries de TV disponíveis.                                                 |
+|                       | `/account`                                                                   | Obtém detalhes da conta do usuário autenticado.                                                             |
+|                       | `/account/{account_id}/favorite/movies`                                      | Lista os filmes favoritos do usuário.                                                                       |
+|                       | `/account/{account_id}/favorite/tv`                                          | Lista as séries de TV favoritas do usuário.                                                                 |
+|                       | `/account/{account_id}/watchlist/movies`                                     | Lista os filmes na lista de observação do usuário.                                                          
+
+## **📌 Tabela de Relacionamento - Schema 1**
 
 | **Nome da Tabela**          | **Relacionamento**                                        | **Endpoint TMDb** |
 |----------------------------|---------------------------------------------------------|-------------------|
