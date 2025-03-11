@@ -1,5 +1,6 @@
 -- Ativar suporte a chaves estrangeiras
 PRAGMA foreign_keys = ON;
+PRAGMA encoding = 'UTF-8';
 
 -- Tabela de usuários: Armazena informações dos usuários cadastrados
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -7,6 +8,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nome TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     senha TEXT NOT NULL,
+    admin INTEGER DEFAULT 0 CHECK (admin IN (0,1)),
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -45,6 +47,7 @@ CREATE TABLE IF NOT EXISTS preferencias_usuario (
     generos_preferidos TEXT, -- Lista de IDs de gêneros do TMDb (ex: "28,12,16")
     ano_preferido INTEGER,
     nota_minima INTEGER CHECK (nota_minima BETWEEN 1 AND 5),
+    preferencia_ator TEXT, -- Lista de IDs ou nomes de atores preferidos
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
 );
 
@@ -56,4 +59,12 @@ CREATE TABLE IF NOT EXISTS recomendacoes (
     data_recomendacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     PRIMARY KEY (id_usuario, id_filme_tmdb)
+);
+
+-- Tabela de filmes: Armazena informações sobre os filmes
+CREATE TABLE IF NOT EXISTS filmes (
+    id_filme_tmdb INTEGER PRIMARY KEY,  -- ID do filme no TMDb
+    nome TEXT NOT NULL, -- Nome do filme
+    genero TEXT NOT NULL -- Lista de gêneros do filme
+    tags TEXT NOT NULL -- Lista de tags do filme
 );
