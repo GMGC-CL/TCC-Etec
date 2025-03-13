@@ -41,14 +41,22 @@ CREATE TABLE IF NOT EXISTS historico_visualizacao (
     PRIMARY KEY (id_usuario, id_filme_tmdb)
 );
 
--- Tabela de preferências do usuário: Armazena os gêneros favoritos e filtros de recomendação
+-- Tabela de preferências do usuário: Armazena filtros de recomendação
 CREATE TABLE IF NOT EXISTS preferencias_usuario (
     id_usuario INTEGER PRIMARY KEY,
-    generos_preferidos TEXT, -- Lista de IDs de gêneros do TMDb (ex: "28,12,16")
     ano_preferido INTEGER,
     nota_minima INTEGER CHECK (nota_minima BETWEEN 1 AND 5),
     preferencia_ator TEXT, -- Lista de IDs ou nomes de atores preferidos
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+);
+
+-- Tabela de associação entre usuários e seus gêneros preferidos
+CREATE TABLE IF NOT EXISTS usuario_genero (
+    id_usuario INTEGER NOT NULL,
+    id_genero INTEGER NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    FOREIGN KEY (id_genero) REFERENCES generos(id_genero) ON DELETE CASCADE,
+    PRIMARY KEY (id_usuario, id_genero)
 );
 
 -- Tabela de recomendações: Filmes recomendados para os usuários
@@ -64,7 +72,31 @@ CREATE TABLE IF NOT EXISTS recomendacoes (
 -- Tabela de filmes: Armazena informações sobre os filmes
 CREATE TABLE IF NOT EXISTS filmes (
     id_filme_tmdb INTEGER PRIMARY KEY,  -- ID do filme no TMDb
-    nome TEXT NOT NULL, -- Nome do filme
-    genero TEXT NOT NULL -- Lista de gêneros do filme
-    tags TEXT NOT NULL -- Lista de tags do filme
+    nome TEXT NOT NULL -- Nome do filme
+);
+
+-- Tabela de gêneros de filmes
+CREATE TABLE IF NOT EXISTS generos (
+    id_genero INTEGER PRIMARY KEY,  -- ID do gênero (corresponde ao TMDb)
+    nome TEXT NOT NULL UNIQUE  -- Nome do gênero
+);
+
+-- Tabela de relacionamento entre filmes e gêneros (muitos para muitos)
+CREATE TABLE IF NOT EXISTS filme_genero (
+    id_filme_tmdb INTEGER NOT NULL,
+    id_genero INTEGER NOT NULL,
+    FOREIGN KEY (id_filme_tmdb) REFERENCES filmes(id_filme_tmdb) ON DELETE CASCADE,
+    FOREIGN KEY (id_genero) REFERENCES generos(id_genero) ON DELETE CASCADE,
+    PRIMARY KEY (id_filme_tmdb, id_genero)
+);
+
+-- Tabela de comentários: Permite que usuários comentem sobre os filmes
+CREATE TABLE IF NOT EXISTS comentarios (
+    id_comentario INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_usuario INTEGER NOT NULL,
+    id_filme_tmdb INTEGER NOT NULL,
+    comentario TEXT NOT NULL,
+    data_comentario TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    FOREIGN KEY (id_filme_tmdb) REFERENCES filmes(id_filme_tmdb) ON DELETE CASCADE
 );
