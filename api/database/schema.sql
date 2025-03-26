@@ -93,3 +93,4 @@ CREATE TABLE IF NOT EXISTS filme_tag (
     FOREIGN KEY (id_tag) REFERENCES tags(id_tag) ON DELETE CASCADE,
     PRIMARY KEY (id_filme_tmdb, id_tag)
 );
+
